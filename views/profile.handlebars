@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-auto">
+    <h2>Welcome, {{name}}!</h2>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+    <h3>Create a New Blog:</h3>
+
+    <form class="form new-blog-form">
+      <div class="form-group">
+        <label for="blog-title">blog title:</label>
+        <input class="form-input" type="text" id="blog-title" title="blog-title" />
+      </div>
+      <div class="form-group">
+        <label for="blog-cont">content:</label>
+        <textarea class="form-input" id="blog-cont" cont="blog-cont"></textarea>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div>
+
+  {{#if blogs.length}}
+  <div class="col-md-6 blog-list">
+    <h3>Current Blogs:</h3>
+
+    {{#each blogs as |blog|}}
+    <div class="row mb-2">
+      <div class="col-md-8">
+        <h4><a href="/blog/{{blog.id}}">{{blog.title}}</a></h4>
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-sm btn-danger" data-id="{{blog.id}}">DELETE</button>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+    <h3>Create a New Comment:</h3>
+
+    <form class="form new-comment-form">
+      <div class="form-group">
+        <label for="comment-title">comment title:</label>
+        <input class="form-input" type="text" id="comment-title" name="comment-title" />
+      </div>
+        <div class="form-group">
+        <label for="blog_id">Blog ID:</label>
+        <input class="form-input" type="number" id="blog_id" name="blog_id" />
+      </div>
+      <div class="form-group">
+        <label for="comment-cont">content:</label>
+        <textarea class="form-input" id="comment-cont" name="comment-cont"></textarea>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div>
+
+  {{#if comments.length}}
+  <div class="col-md-6 comment-list">
+    <h3>Current Comments:</h3>
+
+    {{#each comments as |comment|}}
+    <div class="row mb-2">
+      <div class="col-md-8">
+        <h4><a href="/comment/{{comment.id}}">{{comment.title}}</a></h4>
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-sm btn-danger" data-id="{{comment.id}}">DELETE</button>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>
+
+<script src="./js/profile.js"></script>
