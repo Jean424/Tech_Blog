@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { User, Blog, Comment } = require('../models');
+const withAuth = require('../utils/auth');
 
 // GET all Blogs for homepage
 router.get('/', async (req, res) => {
@@ -26,55 +27,57 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET one gallery
-router.get('/gallery/:id', async (req, res) => {
+// GET one blog
+router.get('/blog/:id', async (req, res) => {
   try {
-    const dbGalleryData = await Gallery.findByPk(req.params.id, {
+    const blogData = await Blog.findByPk(req.params.id, {
       include: [
         {
-          model: Painting,
-          attributes: [
-            'id',
-            'title',
-            'artist',
-            'exhibition_date',
-            'filename',
-            'description',
-          ],
+          model: User,
+          attributes: ['name'],
         },
       ],
     });
 
-    const gallery = dbGalleryData.get({ plain: true });
-    res.render('gallery', {
-      gallery,
-      // We are not incrementing the 'countVisit' session variable here
-      // but simply sending over the current 'countVisit' session variable to be rendered
-      countVisit: req.session.countVisit,
+    const blog = blogData.get({ plain: true });
+
+    res.render('blog', {
+      ...blog,
+      logged_in: req.session.logged_in
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 });
 
-// GET one painting
-router.get('/painting/:id', async (req, res) => {
+// Use withAuth middleware to prevent access to route
+router.get('/profile', withAuth, async (req, res) => {
   try {
-    const dbPaintingData = await Painting.findByPk(req.params.id);
+    // Find the logged in user based on the session ID
+    const userData = await User.findByPk(req.session.user_id, {
+      attributes: { exclude: ['password'] },
+      include: [{ model: Blog }, { model: Comment }],
+    });
 
-    const painting = dbPaintingData.get({ plain: true });
+    const user = userData.get({ plain: true });
 
-    res.render('painting', {
-      painting,
-      // We are not incrementing the 'countVisit' session variable here
-      // but simply sending over the current 'countVisit' session variable to be rendered
-      countVisit: req.session.countVisit,
+    res.render('profile', {
+      ...user,
+      logged_in: true
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
+});
+
+router.get('/login', (req, res) => {
+  // If the user is already logged in, redirect the request to another route
+  if (req.session.logged_in) {
+    res.redirect('/profile');
+    return;
+  }
+
+  res.render('login');
 });
 
 module.exports = router;
