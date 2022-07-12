@@ -1,33 +1,67 @@
 const sequelize = require('../config/connection');
 const { User, Blog, Comment } = require('../models');
 
-const userData = require('./userData.json');
-const blogData = require('./blogData.json');
-const commentData = require('./commentData.json');
+const users = [
+  {
+    "name": "Sal",
+    "email": "sal@hotmail.com",
+    "password": "password12345"
+  },
+  {
+    "name": "Lernantino",
+    "email": "lernantino@gmail.com",
+    "password": "password12345"
+  },
+  {
+    "name": "Amiko",
+    "email": "amiko2k20@aol.com",
+    "password": "password12345"
+  }
+]
+
+const blogs = [
+  {
+    "title": "Music Near Me",
+    "contents": "A mobile app that will send you notifications whenever a concert is playing in your area."
+  },
+  {
+    "title": "The Ultimate Tech Quiz",
+    "contents": "A web app that will give users 10 new technical questions each day and track their progress in things like programming, cybersecurity, database architecture, and more!"
+  },
+  {
+    "title": "Roll 'Em Up",
+    "contents": "A game for Windows and macOS where players move a ball through a series of increasingly challenging mazes."
+  }
+]
+
+const comments = [
+  {
+    "title": "Music Near Me",
+    "contents": "A mobile app that will send you notifications whenever a concert is playing in your area."
+  },
+  {
+    "title": "The Ultimate Tech Quiz",
+    "contents": "A web app that will give users 10 new technical questions each day and track their progress in things like programming, cybersecurity, database architecture, and more!"
+  },
+  {
+    "title": "Roll 'Em Up",
+    "contents": "A game for Windows and macOS where players move a ball through a series of increasingly challenging mazes."
+  }
+]
 
 const seedDatabase = async () => {
-  await sequelize.sync({ force: true });
+  try {
+    await sequelize.sync({ force: true });
 
-  const users = await User.bulkCreate(userData, {
-    individualHooks: true,
-    returning: true,
-  });
+    await User.bulkCreate(users, { individualHooks: true });
+    await Blog.bulkCreate(blogs);
+    await Comment.bulkCreate(comments);
 
-  for (const blog of blogData) {
-    await Blog.create({
-      ...blog,
-      user_id: users[Math.floor(Math.random() * users.length)].id,
-    });
-  }
+    process.exit(0);
+  } catch(err){
+    console.log(err);
+  };
 
-  for (const comment of commentData) {
-    await Comment.create({
-      ...comment,
-      user_id: users[Math.floor(Math.random() * users.length)].id,
-    });
-  }
-
-  process.exit(0);
 };
 
 seedDatabase();

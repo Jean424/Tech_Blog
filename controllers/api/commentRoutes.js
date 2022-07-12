@@ -6,7 +6,7 @@ router.post('/', withAuth, async (req, res) => {
   try {
     const newComment = await Comment.create({
       ...req.body,
-      user_id: req.session.user_id,
+      id: req.session.id,
     });
 
     res.status(200).json(newComment);
@@ -17,19 +17,19 @@ router.post('/', withAuth, async (req, res) => {
 
 router.delete('/:id', withAuth, async (req, res) => {
   try {
-    const commentData = await Comment.destroy({
+    const deleteComment = await Comment.destroy({
       where: {
         id: req.params.id,
-        user_id: req.session.user_id,
+        user_id: req.session.user.id,
       },
     });
 
-    if (!commentData) {
+    if (!deleteComment) {
       res.status(404).json({ message: 'No comment found with this id!' });
       return;
     }
 
-    res.status(200).json(commentData);
+    res.status(200).json(deleteComment);
   } catch (err) {
     res.status(500).json(err);
   }

@@ -6,7 +6,7 @@ router.post('/', withAuth, async (req, res) => {
   try {
     const newBlog = await Blog.create({
       ...req.body,
-      user_id: req.session.user_id,
+      user_id: req.session.user.id,
     });
 
     res.status(200).json(newBlog);
@@ -17,19 +17,19 @@ router.post('/', withAuth, async (req, res) => {
 
 router.delete('/:id', withAuth, async (req, res) => {
   try {
-    const blogData = await Blog.destroy({
+    const deleteData = await Blog.destroy({
       where: {
         id: req.params.id,
-        user_id: req.session.user_id,
+        user_id: req.session.user.id,
       },
     });
 
-    if (!blogData) {
+    if (!deleteData) {
       res.status(404).json({ message: 'No blog found with this id!' });
       return;
     }
 
-    res.status(200).json(projectData);
+    res.status(200).json(deleteData);
   } catch (err) {
     res.status(500).json(err);
   }
