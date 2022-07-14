@@ -1,83 +1,47 @@
 const router = require('express').Router();
-const { User, Blog, Comment } = require('../models');
+const { User, Blog} = require('../models');
 const withAuth = require('../utils/auth');
 
 // GET all Blogs for homepage
 router.get('/', async (req, res) => {
-  try {
-    const dbBlogData = await Blog.findAll({
-      include: [
-        {
-          model: User,
-        },
-      ],
-    });
-
-    const blogs = dbBlogData.map((blog) =>
-    blog.get({ plain: true })
-    );
-
-    res.render('homepage', {
-      blogs,
-      loggedIn: req.session.loggedIn,
-      username: req.session.username,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
-  }
+  const blogData = await Blog.findAll().catch((err) => {
+    res.json(err);
+})
+const loggedIn = req.session.user ? true : false;
+const blogs = blogData.map((blog) => blog.get({ plain: true }));
+res.render("home", { blogs, loggedIn, username: req.session.user?.username });
 });
 
-// GET one blog
-router.get('/blog/:id', async (req, res) => {
-  try {
-    const blogData = await Blog.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-        },
-      ],
-    });
+// signup
+router.get("/signup", (req, res) => {
 
-    const blog = blogData.get({ plain: true });
+if (req.session.user) {
+    return res.redirect("/");
+};
 
-    res.render('blog', {
-      ...blog,
-      logged_in: req.session.logged_in
-    });
-  } catch (err) {
-    res.status(500).json(err);
-  }
+res.render("signup");
 });
 
-// Use withAuth middleware to prevent access to route
-router.get('/profile', withAuth, async (req, res) => {
-  try {
-    // Find the logged in user based on the session ID
-    const userData = await User.findByPk(req.session.user_id, {
-      attributes: { exclude: ['password'] },
-      include: [{ model: Blog }, { model: Comment }],
-    });
-
-    const user = userData.get({ plain: true });
-
-    res.render('profile', {
-      ...user,
-      logged_in: true
-    });
-  } catch (err) {
-    res.status(500).json(err);
+//loads login 
+router.get("/login", (req, res) => {
+  if (req.session.user) {
+      return res.redirect("/");
   }
+  res.render("login");
 });
 
-router.get('/login', (req, res) => {
-  // If the user is already logged in, redirect the request to another route
-  if (req.session.logged_in) {
-    res.redirect('/profile');
-    return;
+//loads profile
+router.get("/profile", (req, res) => {
+  if (!req.session.user) {
+      return res.redirect("/login")
   }
-
-  res.render('login');
+  User.findByPk(req.session.user.id, {
+      include: { all: true, nested: true }
+  }).then(userData => {
+      const hbsData = userData.get({ plain: true })
+      hbsData.loggedIn = req.session.user ? true : false
+      res.render("profile", hbsData)
+  });
 });
 
 module.exports = router;
