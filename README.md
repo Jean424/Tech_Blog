@@ -29,8 +29,9 @@ Licensed under the [MIT License](LICENSE).
 - Email: jeanlee.jingli@icloud.com
 
 ## Link
-- Screen_Shot of homepage:![Screenshot of application](./images/techblog_home.png)
-- Screen_Shot of signup:![Screenshot of application](./images/techblog_signup.png)
-- Screen_Shot of login:![Screenshot of application](./images/techblog_login.png)
-- Screen_Shot of create_new_post:![Screenshot of application](./images/techblog_create_new.png)
-- Screen_Shot of new_posts:![Screenshot of application](./images/techblog_new_post.png)
+- Link to the heroku: https://tech-blog-j.herokuapp.com/
+- Screen_Shot of homepage:![Screenshot of application](./images/ScreenShot_HomePage.png)
+- Screen_Shot of signup:![Screenshot of application](./images/ScreenShot_SignUp.png)
+- Screen_Shot of login:![Screenshot of application](./images/ScreenShot_Login.png)
+- Screen_Shot of create_new_post:![Screenshot of application](./images/ScreenShot_CreateNewPost.png)
+- Screen_Shot of new_posts:![Screenshot of application](./images/ScreenShot_NewPost.png)
