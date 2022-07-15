@@ -185,7 +185,12 @@ h4 {
 
 .link {
   /* color: var(--light-dark); */
-  color: brown;
+  color:rgba(255, 255, 255, 1);
+}
+
+.fab {
+  /* color: var(--light-dark); */
+  padding: 20px;
 }
 
 .login-link {

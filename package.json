@@ -6,7 +6,6 @@
   "scripts": {
     "test": "test",
     "start": "node server.js",
-    "watch": "nodemon server.js",
     "seed": "node seeds/index.js"
   },
   "keywords": [],
@@ -21,9 +20,5 @@
     "express-session": "^1.17.1",
     "mysql2": "^2.2.5",
     "sequelize": "^6.3.5"
-  },
-  "devDependencies": {
-    "jest": "^26.4.2",
-    "nodemon": "^2.0.19"
   }
 }
